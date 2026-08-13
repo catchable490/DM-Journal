@@ -27,6 +27,7 @@
       .kbd-badge { background: #0f111a; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 2px 7px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); }
       .btn-quick-summon { background: var(--accent-purple); color: #fff; border: none; border-radius: 6px; padding: 6px 12px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
       .scene-bar { display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface); border-radius: 6px; padding: 6px 10px; font-size: 0.8rem; border: 1px solid rgba(255, 255, 255, 0.05); }
+      .scene-info { display: flex; align-items: center; gap: 6px; color: var(--text-secondary); }
       .scene-name { color: var(--accent-cyan); font-weight: 600; font-family: 'JetBrains Mono', monospace; }
       .action-row { display: flex; align-items: center; gap: 8px; }
       .btn-action { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); padding: 6px 10px; border-radius: 6px; font-size: 0.78rem; cursor: pointer; }
@@ -38,6 +39,10 @@
       .content-pane { display: none; height: 100%; flex-direction: column; }
       .content-pane.active { display: flex; }
       .markdown-view { flex: 1; overflow-y: auto; background: var(--bg-surface); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 16px; line-height: 1.6; }
+      .markdown-view h1 { font-family: 'Outfit', sans-serif; font-size: 1.25rem; color: var(--accent-purple); border-bottom: 1px solid rgba(139, 92, 246, 0.2); padding-bottom: 4px; margin-bottom: 10px; }
+      .markdown-view h2 { font-size: 1.05rem; color: var(--accent-cyan); margin-top: 12px; margin-bottom: 6px; }
+      .markdown-view p { margin-bottom: 8px; color: var(--text-primary); }
+      .markdown-view li { margin-bottom: 4px; margin-left: 18px; }
       .raw-editor { width: 100%; height: 100%; background: var(--bg-surface); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; color: #e2e8f0; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; padding: 14px; resize: none; outline: none; }
       .obsidian-link { color: var(--accent-purple); background: rgba(139, 92, 246, 0.12); padding: 1px 5px; border-radius: 4px; font-weight: 600; }
       .quick-popup-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 17, 26, 0.75); backdrop-filter: blur(8px); display: flex; justify-content: center; padding-top: 50px; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
@@ -54,7 +59,25 @@
 
     <script type="module">
       import OBR from 'https://esm.sh/@owlbear-rodeo/sdk@2.3.2';
-      import { marked } from 'https://esm.sh/marked@12.0.0';
+
+      function renderMarkdown(md) {
+        if (!md) return '';
+        return md
+          .split('\n')
+          .map(line => {
+            let l = line.trim();
+            if (l.startsWith('# ')) return `<h1>${l.substring(2)}</h1>`;
+            if (l.startsWith('## ')) return `<h2>${l.substring(3)}</h2>`;
+            if (l.startsWith('- ')) return `<li>${l.substring(2)}</li>`;
+            if (l.startsWith('**') && l.endsWith('**')) return `<p><strong>${l.substring(2, l.length - 2)}</strong></p>`;
+            if (l === '---') return '<hr style="border:none; border-top:1px solid rgba(139,92,246,0.2); margin:10px 0"/>';
+            if (!l) return '';
+            return `<p>${l}</p>`;
+          })
+          .join('')
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\[\[(.*?)\]\]/g, '<span class="obsidian-link">[[$1]]</span>');
+      }
 
       class OBRService {
         constructor() {
@@ -332,8 +355,7 @@
         }
         renderPreview() {
           const md = journalManager.generateMarkdown();
-          const html = marked.parse(md);
-          return html.replace(/\[\[(.*?)\]\]/g, (_, inText) => `<span class="obsidian-link">[[${inText}]]</span>`);
+          return renderMarkdown(md);
         }
         renderHistory() {
           const list = journalManager.sessions;
