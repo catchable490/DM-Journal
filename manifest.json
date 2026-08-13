@@ -6,8 +6,8 @@
   "description": "Zero-friction GM journal with quick hotkey popup, automatic scene headings, @player mentions, and Obsidian markdown export.",
   "action": {
     "title": "DM Journal",
-    "icon": "https://catchable490.github.io/DM-Journal/icon.svg",
-    "popover": "https://catchable490.github.io/DM-Journal/index.html",
+    "icon": "https://raw.githack.com/catchable490/DM-Journal/main/icon.svg",
+    "popover": "https://raw.githack.com/catchable490/DM-Journal/main/index.html",
     "width": 450,
     "height": 650
   }
