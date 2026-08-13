@@ -8,41 +8,371 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <style>
-      body { font-family: 'Inter', sans-serif; background: #0f111a; color: #f1f5f9; margin: 0; padding: 0; height: 100vh; overflow-x: hidden; }
+      :root {
+        --bg-primary: #0f111a; --bg-surface: #181b28; --bg-card: #202436;
+        --border-color: rgba(139, 92, 246, 0.18); --accent-purple: #8b5cf6;
+        --accent-pink: #ec4899; --accent-cyan: #06b6d4; --accent-emerald: #10b981;
+        --text-primary: #f1f5f9; --text-secondary: #94a3b8;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Inter', sans-serif; background-color: var(--bg-primary); color: var(--text-primary); font-size: 14px; line-height: 1.5; overflow-x: hidden; height: 100vh; width: 100vw; }
       #app { height: 100%; display: flex; flex-direction: column; }
       .journal-container { display: flex; flex-direction: column; height: 100%; padding: 14px; gap: 12px; }
-      .journal-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid rgba(139,92,246,0.2); }
+      .journal-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
       .brand-title { font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; color: #fff; }
-      .status-badge { padding: 3px 8px; border-radius: 12px; font-size: 0.72rem; font-weight: 600; background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
-      .status-badge.inactive { background: rgba(100,116,139,0.15); color: #94a3b8; border-color: rgba(100,116,139,0.3); }
-      .hotkey-banner { display: flex; align-items: center; justify-content: space-between; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); border-radius: 8px; padding: 10px 14px; }
-      .kbd-badge { background: #0f111a; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 2px 7px; font-family: 'JetBrains Mono', monospace; color: #8b5cf6; font-weight: 700; }
-      .btn-quick-summon { background: #8b5cf6; color: #fff; border: none; border-radius: 6px; padding: 6px 12px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
-      .scene-bar { display: flex; align-items: center; justify-content: space-between; background: #181b28; border-radius: 6px; padding: 6px 10px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.05); }
-      .scene-name { color: #06b6d4; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
-      .action-row { display: flex; gap: 8px; }
-      .btn-action { background: #202436; border: 1px solid rgba(139,92,246,0.2); color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 0.78rem; cursor: pointer; }
-      .btn-copy { background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(6,182,212,0.25)); border-color: #8b5cf6; font-weight: 600; }
-      .nav-tabs { display: flex; gap: 4px; background: #181b28; padding: 4px; border-radius: 8px; }
-      .nav-tab { flex: 1; background: transparent; border: none; color: #94a3b8; padding: 6px; font-weight: 600; border-radius: 6px; cursor: pointer; }
-      .nav-tab.active { background: #202436; color: #fff; border: 1px solid rgba(139,92,246,0.3); }
-      .tab-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+      .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border-radius: 12px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; background: rgba(16, 185, 129, 0.12); color: var(--accent-emerald); border: 1px solid rgba(16, 185, 129, 0.3); }
+      .status-badge.inactive { background: rgba(100, 116, 139, 0.15); color: var(--text-secondary); border-color: rgba(100, 116, 139, 0.3); }
+      .hotkey-banner { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.1)); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 10px; padding: 10px 14px; }
+      .hotkey-hint { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-secondary); }
+      .kbd-badge { background: #0f111a; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 2px 7px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); }
+      .btn-quick-summon { background: var(--accent-purple); color: #fff; border: none; border-radius: 6px; padding: 6px 12px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+      .scene-bar { display: flex; align-items: center; justify-content: space-between; background: var(--bg-surface); border-radius: 6px; padding: 6px 10px; font-size: 0.8rem; border: 1px solid rgba(255, 255, 255, 0.05); }
+      .scene-name { color: var(--accent-cyan); font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+      .action-row { display: flex; align-items: center; gap: 8px; }
+      .btn-action { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); padding: 6px 10px; border-radius: 6px; font-size: 0.78rem; cursor: pointer; }
+      .btn-action.btn-copy { background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.2)); border-color: var(--accent-purple); color: #fff; font-weight: 600; }
+      .nav-tabs { display: flex; gap: 4px; background: var(--bg-surface); padding: 4px; border-radius: 10px; }
+      .nav-tab { flex: 1; background: transparent; border: none; color: var(--text-secondary); padding: 6px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; cursor: pointer; }
+      .nav-tab.active { background: var(--bg-card); color: #fff; border: 1px solid rgba(139, 92, 246, 0.3); }
+      .tab-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
       .content-pane { display: none; height: 100%; flex-direction: column; }
       .content-pane.active { display: flex; }
-      .markdown-view { flex: 1; overflow-y: auto; background: #181b28; border-radius: 8px; padding: 14px; line-height: 1.6; border: 1px solid rgba(255,255,255,0.05); }
-      .raw-editor { width: 100%; height: 100%; background: #181b28; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #e2e8f0; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; padding: 12px; resize: none; outline: none; }
-      .obsidian-link { color: #8b5cf6; background: rgba(139,92,246,0.15); padding: 1px 5px; border-radius: 4px; font-weight: 600; }
-      .quick-popup-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15,17,26,0.8); backdrop-filter: blur(8px); display: flex; justify-content: center; padding-top: 40px; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+      .markdown-view { flex: 1; overflow-y: auto; background: var(--bg-surface); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 16px; line-height: 1.6; }
+      .raw-editor { width: 100%; height: 100%; background: var(--bg-surface); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; color: #e2e8f0; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; padding: 14px; resize: none; outline: none; }
+      .obsidian-link { color: var(--accent-purple); background: rgba(139, 92, 246, 0.12); padding: 1px 5px; border-radius: 4px; font-weight: 600; }
+      .quick-popup-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 17, 26, 0.75); backdrop-filter: blur(8px); display: flex; justify-content: center; padding-top: 50px; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
       .quick-popup-overlay.active { opacity: 1; pointer-events: auto; }
-      .quick-popup-card { width: 90%; max-width: 500px; background: #181b28; border: 1px solid #8b5cf6; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-      .popup-input { width: 100%; background: #202436; border: 1px solid rgba(139,92,246,0.3); border-radius: 8px; color: #fff; font-size: 0.95rem; padding: 10px 14px; outline: none; }
+      .quick-popup-card { width: 90%; max-width: 520px; background: var(--bg-surface); border: 1px solid var(--accent-purple); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+      .popup-input { width: 100%; background: var(--bg-card); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 10px; color: #fff; font-size: 0.95rem; padding: 12px 14px; outline: none; }
       .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10001; }
-      .toast { background: #202436; border: 1px solid #8b5cf6; color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; }
-      .gm-guard { height: 100%; display: flex; align-items: center; justify-content: center; color: #94a3b8; }
+      .toast { background: var(--bg-card); border: 1px solid var(--accent-purple); color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; }
+      .gm-guard { height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); text-align: center; }
     </style>
   </head>
   <body>
     <div id="app"></div>
-    <script type="module" src="./app.js"></script>
+
+    <script type="module">
+      import OBR from 'https://esm.sh/@owlbear-rodeo/sdk@2.3.2';
+      import { marked } from 'https://esm.sh/marked@12.0.0';
+
+      class OBRService {
+        constructor() {
+          this.isReady = false; this.isStandalone = false;
+          this.party = [{ id: '1', name: 'Valdar' }, { id: '2', name: 'Lyra' }, { id: '3', name: 'Kaelen' }];
+          this.init();
+        }
+        init() {
+          try {
+            if (typeof window !== 'undefined' && window.location !== window.parent.location) {
+              OBR.onReady(async () => {
+                this.isReady = true;
+                this.updateParty();
+                OBR.party.onChange(() => this.updateParty());
+              });
+            } else { this.isReady = true; this.isStandalone = true; }
+          } catch (e) { this.isReady = true; this.isStandalone = true; }
+        }
+        async updateParty() {
+          if (!this.isReady || this.isStandalone) return;
+          try {
+            const players = await OBR.party.getPlayers();
+            if (players && players.length > 0) this.party = players.map(p => ({ id: p.id, name: p.name || 'Player' }));
+          } catch (e) {}
+        }
+        async checkIsGM() {
+          if (this.isStandalone) return true;
+          try {
+            const rolePromise = OBR.player.getRole();
+            const timeoutPromise = new Promise(res => setTimeout(() => res('GM'), 500));
+            return (await Promise.race([rolePromise, timeoutPromise])) === 'GM';
+          } catch (e) { return true; }
+        }
+        async fetchSceneName() {
+          if (this.isStandalone) return 'Shaboath';
+          try {
+            if (!(await OBR.scene.isReady())) return 'General Notes';
+            const meta = await OBR.scene.getMetadata();
+            return (meta && meta.name) ? meta.name : 'Shaboath';
+          } catch (e) { return 'General Notes'; }
+        }
+        getPartyPlayers() { return this.party; }
+        async saveData(str) {
+          localStorage.setItem('obr_dm_journal_v1', str);
+          if (!this.isStandalone && this.isReady) {
+            try { await OBR.room.setMetadata({ 'com.antigravity.dm-journal/notes': str }); } catch (e) {}
+          }
+        }
+        async loadData() {
+          if (!this.isStandalone && this.isReady) {
+            try {
+              const meta = await OBR.room.getMetadata();
+              if (meta && meta['com.antigravity.dm-journal/notes']) return meta['com.antigravity.dm-journal/notes'];
+            } catch (e) {}
+          }
+          return localStorage.getItem('obr_dm_journal_v1');
+        }
+      }
+
+      const obrService = new OBRService();
+
+      class JournalManager {
+        constructor() {
+          this.sessions = []; this.currentId = null;
+          this.onUpdate = null;
+          this.load();
+        }
+        async load() {
+          const raw = await obrService.loadData();
+          if (raw) {
+            try {
+              const p = JSON.parse(raw);
+              this.sessions = p.sessions || [];
+              this.currentId = p.currentId || null;
+            } catch (e) {}
+          }
+          const today = new Date().toISOString().split('T')[0];
+          const cur = this.getCurrentSession();
+          if (!cur || cur.date !== today) this.startSession(false);
+        }
+        async save() {
+          await obrService.saveData(JSON.stringify({ sessions: this.sessions, currentId: this.currentId }));
+        }
+        getCurrentSession() { return this.sessions.find(s => s.id === this.currentId); }
+        startSession(explicit = true) {
+          const now = new Date();
+          const players = obrService.getPartyPlayers().map(p => p.name);
+          const newS = {
+            id: 'session_' + Date.now(),
+            date: now.toISOString().split('T')[0],
+            formattedDate: now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }),
+            startTime: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+            endTime: null,
+            players: players.length > 0 ? players : ['Valdar', 'Lyra', 'Kaelen'],
+            active: true,
+            entries: []
+          };
+          this.sessions.forEach(s => s.active = false);
+          this.sessions.unshift(newS);
+          this.currentId = newS.id;
+          if (explicit && this.onUpdate) this.onUpdate();
+          this.save();
+          return newS;
+        }
+        endSession() {
+          const s = this.getCurrentSession();
+          if (s) {
+            s.endTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            s.active = false;
+            if (this.onUpdate) this.onUpdate();
+            this.save();
+          }
+        }
+        async addNote(text) {
+          const t = text.trim();
+          if (!t) return { isCmd: false };
+          if (t.toLowerCase() === '$start') { this.startSession(true); return { isCmd: true, name: '$start' }; }
+          if (t.toLowerCase() === '$end') { this.endSession(); return { isCmd: true, name: '$end' }; }
+          let s = this.getCurrentSession();
+          if (!s) s = this.startSession(true);
+          const scene = await obrService.fetchSceneName();
+          const timestamp = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+          let formatted = t.replace(/#([a-zA-Z0-9_\-]+)/g, (_, tag) => `[[${tag}]]`);
+          formatted = formatted.replace(/@([a-zA-Z0-9_\-]+)/g, (_, p) => `[[${p}]]`);
+          s.entries.push({ id: 'e_' + Date.now(), scene, raw: t, formatted, timestamp });
+          if (this.onUpdate) this.onUpdate();
+          this.save();
+          return { isCmd: false };
+        }
+        generateMarkdown(session) {
+          const s = session || this.getCurrentSession();
+          if (!s) return '# No Session Log\n';
+          let md = `# Session Log - ${s.formattedDate}\n\n**Date**: ${s.date}\n**Start Time**: ${s.startTime}\n`;
+          md += s.endTime ? `**End Time**: ${s.endTime}\n` : `**Status**: Active 🟢\n`;
+          md += `**Players Present**: ${s.players.map(p => `[[${p}]]`).join(', ')}\n\n---\n\n`;
+          if (s.entries.length === 0) return md + '*No notes yet. Press `J` or click Quick Note to add notes!*\n';
+          const grouped = {};
+          s.entries.forEach(e => { (grouped[e.scene] = grouped[e.scene] || []).push(e); });
+          Object.keys(grouped).forEach(sc => {
+            md += `## ${sc}\n`;
+            grouped[sc].forEach(e => { md += `- [${e.timestamp}] ${e.formatted}\n`; });
+            md += `\n`;
+          });
+          return md.trim();
+        }
+      }
+
+      const journalManager = new JournalManager();
+
+      class QuickPopup {
+        constructor() {
+          this.isOpen = false;
+          this.createDom();
+          this.attachEvents();
+        }
+        createDom() {
+          this.overlay = document.createElement('div');
+          this.overlay.className = 'quick-popup-overlay';
+          this.overlay.innerHTML = `
+            <div class="quick-popup-card">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-family:'Outfit', sans-serif; font-weight:700; color:#fff">Quick Note (<span id="popup-scene" style="color:var(--accent-cyan)">Shaboath</span>)</div>
+                <div style="font-size:0.75rem; color:#94a3b8">Enter to save</div>
+              </div>
+              <div style="position:relative">
+                <input type="text" id="quick-input" class="popup-input" placeholder="Type note (e.g. @Valdar found #magic sword), $start or $end..." autocomplete="off"/>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(this.overlay);
+          this.input = this.overlay.querySelector('#quick-input');
+          this.sceneLabel = this.overlay.querySelector('#popup-scene');
+        }
+        attachEvents() {
+          document.addEventListener('keydown', (e) => {
+            const isInput = e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA');
+            if ((e.key === 'j' || e.key === 'J') && !isInput && !this.isOpen) {
+              e.preventDefault(); this.open();
+            } else if (e.key === 'Escape' && this.isOpen) { this.close(); }
+          });
+          this.input.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); await this.submit(); }
+          });
+          this.overlay.addEventListener('click', (e) => { if (e.target === this.overlay) this.close(); });
+        }
+        async open() {
+          this.sceneLabel.textContent = await obrService.fetchSceneName();
+          this.input.value = '';
+          this.isOpen = true;
+          this.overlay.classList.add('active');
+          setTimeout(() => this.input.focus(), 50);
+        }
+        close() {
+          this.isOpen = false;
+          this.overlay.classList.remove('active');
+          this.input.blur();
+        }
+        async submit() {
+          const txt = this.input.value.trim();
+          if (!txt) { this.close(); return; }
+          await journalManager.addNote(txt);
+          this.close();
+          this.showToast('Note added!');
+        }
+        showToast(msg) {
+          let box = document.querySelector('.toast-container');
+          if (!box) { box = document.createElement('div'); box.className = 'toast-container'; document.body.appendChild(box); }
+          const t = document.createElement('div'); t.className = 'toast';
+          t.innerHTML = `<span>${msg}</span>`; box.appendChild(t);
+          setTimeout(() => t.remove(), 2500);
+        }
+      }
+
+      class JournalHub {
+        constructor(container, popup) {
+          this.container = container; this.popup = popup;
+          this.currentTab = 'preview';
+          this.init();
+        }
+        async init() {
+          journalManager.onUpdate = () => this.render();
+          this.render();
+        }
+        render() {
+          const cur = journalManager.getCurrentSession();
+          const active = cur?.active ?? false;
+
+          this.container.innerHTML = `
+            <div class="journal-container">
+              <div class="journal-header">
+                <div class="brand-title">DM Journal</div>
+                <div class="status-badge ${active ? '' : 'inactive'}">${active ? 'Session Active' : 'Ended'}</div>
+              </div>
+
+              <div class="hotkey-banner">
+                <div class="hotkey-hint">Press <span class="kbd-badge">J</span> for quick note</div>
+                <button id="btn-summon" class="btn-quick-summon">+ Quick Note</button>
+              </div>
+
+              <div class="scene-bar">
+                <div class="scene-info">Scene: <span class="scene-name" id="sc-name">Shaboath</span></div>
+                <div class="action-row">
+                  <button id="btn-start" class="btn-action">$start</button>
+                  <button id="btn-end" class="btn-action">$end</button>
+                  <button id="btn-copy" class="btn-action btn-copy">Copy Obsidian MD</button>
+                </div>
+              </div>
+
+              <div class="nav-tabs">
+                <button class="nav-tab ${this.currentTab === 'preview' ? 'active' : ''}" data-t="preview">Preview</button>
+                <button class="nav-tab ${this.currentTab === 'raw' ? 'active' : ''}" data-t="raw">Raw Markdown</button>
+                <button class="nav-tab ${this.currentTab === 'history' ? 'active' : ''}" data-t="history">History</button>
+              </div>
+
+              <div class="tab-content">
+                <div class="content-pane ${this.currentTab === 'preview' ? 'active' : ''}">
+                  <div class="markdown-view">${this.renderPreview()}</div>
+                </div>
+                <div class="content-pane ${this.currentTab === 'raw' ? 'active' : ''}">
+                  <textarea class="raw-editor" readonly>${journalManager.generateMarkdown()}</textarea>
+                </div>
+                <div class="content-pane ${this.currentTab === 'history' ? 'active' : ''}">
+                  <div class="markdown-view">${this.renderHistory()}</div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          obrService.fetchSceneName().then(n => {
+            const el = this.container.querySelector('#sc-name');
+            if (el) el.textContent = n;
+          });
+
+          this.attach();
+        }
+        renderPreview() {
+          const md = journalManager.generateMarkdown();
+          const html = marked.parse(md);
+          return html.replace(/\[\[(.*?)\]\]/g, (_, inText) => `<span class="obsidian-link">[[${inText}]]</span>`);
+        }
+        renderHistory() {
+          const list = journalManager.sessions;
+          if (list.length === 0) return '<p>No history</p>';
+          return list.map(s => `
+            <div style="background:var(--bg-card); padding:8px 12px; margin-bottom:6px; border-radius:6px; display:flex; justify-content:space-between;">
+              <div><strong>${s.formattedDate}</strong> (${s.entries.length} notes)</div>
+            </div>
+          `).join('');
+        }
+        attach() {
+          this.container.querySelector('#btn-summon')?.addEventListener('click', () => this.popup.open());
+          this.container.querySelector('#btn-start')?.addEventListener('click', () => journalManager.addNote('$start'));
+          this.container.querySelector('#btn-end')?.addEventListener('click', () => journalManager.addNote('$end'));
+          this.container.querySelector('#btn-copy')?.addEventListener('click', () => {
+            navigator.clipboard.writeText(journalManager.generateMarkdown());
+            this.popup.showToast('Obsidian MD copied!');
+          });
+          this.container.querySelectorAll('.nav-tab').forEach(t => {
+            t.addEventListener('click', e => {
+              this.currentTab = e.currentTarget.getAttribute('data-t');
+              this.render();
+            });
+          });
+        }
+      }
+
+      async function main() {
+        const app = document.getElementById('app');
+        if (!app) return;
+        const popup = new QuickPopup();
+        new JournalHub(app, popup);
+
+        obrService.checkIsGM().then(isGM => {
+          if (!isGM) app.innerHTML = '<div class="gm-guard"><h2>GM Only Tool</h2></div>';
+        });
+      }
+
+      main();
+    </script>
   </body>
 </html>
