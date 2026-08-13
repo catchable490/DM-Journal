@@ -1,0 +1,14 @@
+{
+  "name": "DM Journal (Obsidian Sync)",
+  "version": "1.0.0",
+  "manifest_version": 1,
+  "author": "Antigravity GM Tools",
+  "description": "Zero-friction GM journal with quick hotkey popup, automatic scene headings, @player mentions, and Obsidian markdown export.",
+  "action": {
+    "title": "DM Journal",
+    "icon": "icon.svg",
+    "popover": "index.html",
+    "width": 450,
+    "height": 650
+  }
+}
